@@ -104,10 +104,23 @@ Os alunos, por sua vez, podem **trocar as moedas por produtos e descontos** ofer
 **Como** empresa parceira  
 **Quero** receber uma notificação quando um aluno resgatar uma vantagem  
 **Para que** eu possa conferir e validar a troca presencialmente  
+---
+
+### HU14 - Notificação de Cupom de Troca
+**Como** aluno   
+**Quero** resgatar um cupom de   
+**Para que** eu possa realizar a troca em uma vantagem presencialmente 
 
 ---
 
-### HU14 - Histórico de Resgates para Empresa  
+### HU15 - Histórico de Resgates para Empresa  
 **Como** empresa parceira  
 **Quero** consultar o histórico de resgates das minhas vantagens  
 **Para que** eu possa acompanhar a adesão e gerenciar meus benefícios  
+
+---
+
+### HU15 - Notificação para Conferir Troca 
+**Como** empresa parceira  
+**Quero** receber uma notificação contendo a troca efetuada
+**Para que** eu possa conferi-la

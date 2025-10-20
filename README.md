@@ -108,7 +108,7 @@ Os alunos, por sua vez, podem **trocar as moedas por produtos e descontos** ofer
 
 ### HU14 - Notificação de Cupom de Troca
 **Como** aluno   
-**Quero** resgatar um cupom de   
+**Quero** resgatar um cupom de troca
 **Para que** eu possa realizar a troca em uma vantagem presencialmente 
 
 ---
@@ -120,7 +120,7 @@ Os alunos, por sua vez, podem **trocar as moedas por produtos e descontos** ofer
 
 ---
 
-### HU15 - Notificação para Conferir Troca 
+### HU16 - Notificação para Conferir Troca 
 **Como** empresa parceira  
 **Quero** receber uma notificação contendo a troca efetuada
 **Para que** eu possa conferi-la

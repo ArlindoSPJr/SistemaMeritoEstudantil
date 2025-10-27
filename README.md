@@ -14,6 +14,11 @@ Os alunos, por sua vez, podem **trocar as moedas por produtos e descontos** ofer
 
 ---
 
+## Estratégia de acesso ao Banco de Dados
+**Repository**
+
+---
+
 ## Histórias de Usuário  
 
 ### HU01 - Cadastro de Aluno  

@@ -22,11 +22,12 @@ public class JwtService {
 	@Value("${security.jwt.expiration-seconds:3600}")
 	private long expirationSeconds;
 
-	public String generateToken(UserDetails userDetails) {
+	public String generateToken(UserDetails userDetails, Long userId) {
 		Instant now = Instant.now();
 		Instant expiry = now.plusSeconds(expirationSeconds);
 		return Jwts.builder()
 				.subject(userDetails.getUsername())
+				.claim("userId", userId)
 				.issuedAt(Date.from(now))
 				.expiration(Date.from(expiry))
 				.signWith(Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)))
@@ -45,6 +46,10 @@ public class JwtService {
 	private boolean isTokenExpired(String token) {
 		Date expiration = extractClaim(token, Claims::getExpiration);
 		return expiration.before(new Date());
+	}
+
+	public Long extractUserId(String token) {
+		return extractClaim(token, claims -> claims.get("userId", Long.class));
 	}
 
 	private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

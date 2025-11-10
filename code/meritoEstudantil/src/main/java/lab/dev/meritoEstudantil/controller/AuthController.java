@@ -30,9 +30,23 @@ public class AuthController {
 	public ResponseEntity<TokenResponse> login(@RequestBody LoginRequest request) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(request.email(), request.senha()));
-		UserDetails user = (UserDetails) authentication.getPrincipal();
-		String token = jwtService.generateToken(user);
-		return ResponseEntity.ok(new TokenResponse(token));
+		
+		Object principal = authentication.getPrincipal();
+		if (principal instanceof UserDetails user) {
+			Long userId = null;
+			// Verifica se o usuário tem ID
+			try {
+				java.lang.reflect.Method getIdMethod = principal.getClass().getMethod("getId");
+				userId = (Long) getIdMethod.invoke(principal);
+			} catch (Exception ignored) {
+				// Se não conseguir pegar o ID, continua com null
+			}
+			
+			String token = jwtService.generateToken(user, userId);
+			return ResponseEntity.ok(new TokenResponse(token, user.getAuthorities().toString(), userId));
+		}
+		
+		throw new IllegalStateException("Usuário não encontrado");
 	}
 }
 

@@ -21,6 +21,7 @@ export default function Header() {
         <Link to="/" className={styles.navLink}>Início</Link>
         <Link to="/alunos" className={styles.navLink}>Alunos</Link>
         <Link to="/empresas" className={styles.navLink}>Empresas</Link>
+        <Link to="/vantagens" className={styles.navLink}>Vantagens</Link>
       </nav>
 
       <div className={styles.actions}>

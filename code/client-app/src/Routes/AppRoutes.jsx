@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../Pages/login';
 import Home from '../Pages/Home';
 import Empresas from '../Pages/Empresas';
+import Vantagens from '../Pages/Vantagens';
 import Alunos from '../Pages/Alunos';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -27,6 +28,14 @@ export default function AppRoutes() {
 					element={
 						<ProtectedRoute>
 							<Empresas />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/vantagens"
+					element={
+						<ProtectedRoute>
+							<Vantagens />
 						</ProtectedRoute>
 					}
 				/>

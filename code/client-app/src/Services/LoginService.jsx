@@ -13,6 +13,10 @@ export async function login(email, senha) {
 		// Remove os colchetes e espaços da role
 		const role = response.role.replace(/[\[\]]/g, '');
 		localStorage.setItem('userRole', role);
+		// Salva o userId se existir
+		if (response.userId) {
+			localStorage.setItem('userId', response.userId.toString());
+		}
 	} catch (err) {
 		console.error('Erro ao salvar dados no localStorage:', err);
 	}
@@ -28,6 +32,7 @@ export function logout(opts = {}) {
 	try {
 		localStorage.removeItem('token');
 		localStorage.removeItem('userRole');
+		localStorage.removeItem('userId');
 	} catch (err) {
 		// ignore
 	}
@@ -64,4 +69,13 @@ export function hasRole(role) {
 	return userRole === `ROLE_${role.toUpperCase()}`;
 }
 
-export default { login, logout, getToken, isAuthenticated, getUserRole, hasRole };
+export function getUserId() {
+	try {
+		const userId = localStorage.getItem('userId');
+		return userId ? parseInt(userId, 10) : null;
+	} catch (err) {
+		return null;
+	}
+}
+
+export default { login, logout, getToken, isAuthenticated, getUserRole, hasRole, getUserId };

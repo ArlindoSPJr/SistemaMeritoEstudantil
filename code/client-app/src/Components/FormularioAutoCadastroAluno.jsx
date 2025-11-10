@@ -24,6 +24,7 @@ export default function FormularioAutoCadastroAluno({ onBack }) {
     try {
       await AlunoService.create(formData);
       alert('Aluno cadastrado com sucesso!');
+      window.location.href = '/login';
     } catch (error) {
       console.error('Erro ao cadastrar aluno:', error);
       alert('Erro ao cadastrar aluno.');

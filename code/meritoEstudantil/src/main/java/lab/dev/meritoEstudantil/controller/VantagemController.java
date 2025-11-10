@@ -15,18 +15,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lab.dev.meritoEstudantil.domain.empresa.EmpresaParceira;
 import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemCreateDTO;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemResponseDTO;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemUpdateDTO;
 import lab.dev.meritoEstudantil.service.VantagemService;
-import org.springframework.web.multipart.MultipartFile;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/vantagens")
@@ -122,12 +121,14 @@ public class VantagemController {
 
     private VantagemResponseDTO toResponse(Vantagem e) {
         Long empresaId = e.getEmpresaParceira() != null ? e.getEmpresaParceira().getId() : null;
+        String empresaNome = e.getEmpresaParceira() != null ? e.getEmpresaParceira().getNomeFantasia() : null;
         return new VantagemResponseDTO(
                 e.getId(),
                 e.getDescricao(),
                 e.isAtivo(),
                 e.getImageUrl(),
                 e.getCustoMoedas(),
-                empresaId);
+                empresaId,
+                empresaNome);
     }
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Modal.module.css';
 import VantagensService from '../Services/VantagensService';
+import LoginService from '../Services/LoginService';
 
 export default function ModalCriarVantagem({ onClose }) {
   const [step, setStep] = useState(1);
@@ -14,19 +15,25 @@ export default function ModalCriarVantagem({ onClose }) {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'image') {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+      setFormData(prev => ({ ...prev, [name]: files[0] || null }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData(prev => ({ ...prev, [name]: value || '' }));
     }
   };
 
   const handleCreateVantagem = async (e) => {
     e.preventDefault();
     try {
+      const empresaId = LoginService.getUserId();
+      if (!empresaId) {
+        console.error('ID da empresa não encontrado. Usuário não está logado.');
+        return;
+      }
+
       const vantagemData = {
         descricao: formData.descricao,
-        custoMoedas: parseInt(formData.custoMoedas, 10),
-        ativo: true
+        custoMoedas: parseFloat(formData.custoMoedas),
+        empresaParceiraId: empresaId
       };
 
       const response = await VantagensService.create(vantagemData);
@@ -64,7 +71,7 @@ export default function ModalCriarVantagem({ onClose }) {
                 name="descricao"
                 className={styles.input}
                 type="text"
-                value={formData.descricao}
+                value={formData.descricao || ''}
                 onChange={handleChange}
                 required
               />
@@ -76,7 +83,7 @@ export default function ModalCriarVantagem({ onClose }) {
                 name="custoMoedas"
                 className={styles.input}
                 type="number"
-                value={formData.custoMoedas}
+                value={formData.custoMoedas || ''}
                 onChange={handleChange}
                 required
               />

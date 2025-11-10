@@ -21,6 +21,7 @@ export default function FormularioAutoCadastroEmpresa({ onBack }) {
     try {
       await EmpresaService.create(formData);
       alert('Empresa cadastrada com sucesso!');
+      window.location.href = '/login';
     } catch (error) {
       console.error('Erro ao cadastrar empresa:', error);
       alert('Erro ao cadastrar empresa.');

@@ -12,10 +12,6 @@ export default function Home() {
           <div className={styles.heroContent}>
             <h1>Bem-vindo ao MeritoEstudantil</h1>
             <p>Gerencie alunos, empresas parceiras e reconheça o mérito dos estudantes com facilidade.</p>
-            <div className={styles.ctaRow}>
-              <button className={styles.ctaPrimary}>Criar novo registro</button>
-              <button className={styles.ctaGhost}>Ver relatórios</button>
-            </div>
           </div>
         </section>
 
@@ -27,10 +23,6 @@ export default function Home() {
           <article className={styles.card}>
             <h3>Empresas Parceiras</h3>
             <p>Gerencie parcerias e oportunidades para estudantes.</p>
-          </article>
-          <article className={styles.card}>
-            <h3>Relatórios</h3>
-            <p>Visualize estatísticas e desempenho em tempo real.</p>
           </article>
         </section>
       </main>

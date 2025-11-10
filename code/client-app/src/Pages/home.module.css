@@ -1,0 +1,27 @@
+:root{
+  --accent-from: #06b6d4;
+  --accent-to: #7c3aed;
+  --muted: #64748b;
+  --text-dark: #0b1220;
+  --white: #ffffff;
+}
+
+*{box-sizing:border-box}
+html,body,#root{height:100%;margin:0}
+
+.page{min-height:100vh;height:100vh;width:100vw;min-width:100vw;align-self:stretch;margin:0;background: linear-gradient(90deg,#09111a,#0f172a)}
+.main{height:calc(100vh - 64px);padding:40px;display:flex;flex-direction:column}
+
+/* Hero fills the remainder of the screen (no responsiveness adjustments) */
+.hero{flex:1;background:linear-gradient(90deg,var(--accent-from),var(--accent-to));border-radius:12px;color:var(--white);padding:48px;margin-bottom:24px}
+.heroContent{max-width:760px}
+.hero h1{margin:0 0 12px 0;font-size:32px}
+.hero p{margin:0 0 18px 0;opacity:0.95}
+.ctaRow{display:flex;gap:12px}
+.ctaPrimary{background:linear-gradient(90deg,var(--accent-from),var(--accent-to));color:white;border:0;padding:12px 18px;border-radius:8px;cursor:pointer}
+.ctaGhost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:12px 18px;border-radius:8px;cursor:pointer;color:var(--white)}
+
+.grid{display:flex;gap:18px;margin-top:24px}
+.card{background:rgba(255,255,255,0.04);padding:18px;border-radius:10px;box-shadow:0 8px 24px rgba(2,6,23,0.06);color:var(--white)}
+.card h3{margin:0 0 8px 0}
+.card p{margin:0;color:rgba(255,255,255,0.8)}

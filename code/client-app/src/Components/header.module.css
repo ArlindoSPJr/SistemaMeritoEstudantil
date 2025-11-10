@@ -1,0 +1,31 @@
+:root{
+  --accent-from: #06b6d4;
+  --accent-to: #7c3aed;
+  --muted: #64748b;
+  --text-dark: #0b1220;
+  --white: #ffffff;
+}
+
+.header{
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  /* transparent header since background is dark; text must be white */
+  background: transparent;
+  color: #ffffff;
+}
+
+.brand{display:flex;align-items:center}
+.logo{display:flex;align-items:baseline;gap:8px;text-decoration:none;color:#ffffff}
+.logo strong{font-size:18px}
+.logo span{color:var(--accent-to);font-weight:700}
+
+.nav{display:flex;gap:18px}
+.navLink{color:rgba(255,255,255,0.9);text-decoration:none;padding:8px 6px;border-radius:6px}
+.navLink:hover{color:#ffffff;background:rgba(255,255,255,0.04)}
+
+.actions{display:flex;align-items:center}
+.logout{background:transparent;border:1px solid rgba(255,255,255,0.12);padding:8px 12px;border-radius:8px;cursor:pointer;color:#ffffff}
+.logout:hover{background:rgba(255,255,255,0.12);color:#ffffff;border-color:transparent}

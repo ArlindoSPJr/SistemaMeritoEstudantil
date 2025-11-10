@@ -37,7 +37,7 @@ export default function Login() {
 		<div className={styles.page}>
 			<div className={styles.container}>
 				<div className={styles.brand}>
-					<h1>Merito<span>Estudantil</span></h1>
+					<h1>Merito<span>Estudantil</span></h1> 
 					<p>Plataforma de gestão de mérito escolar.</p>
 				</div>
 

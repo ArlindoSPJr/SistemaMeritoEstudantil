@@ -30,7 +30,6 @@ public class EmpresaParceiraController {
 	}
 
     @PostMapping
-    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<EmpresaResponseDTO> create(@RequestBody EmpresaCreateDTO dto) {
         EmpresaParceira empresa = new EmpresaParceira();
         empresa.setEmail(dto.email());

@@ -3,7 +3,6 @@ package lab.dev.meritoEstudantil.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +29,6 @@ public class AlunoController {
 	}
 
     @PostMapping
-    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<AlunoResponseDTO> create(@RequestBody AlunoCreateDTO dto) {
         Aluno aluno = new Aluno();
         aluno.setEmail(dto.email());

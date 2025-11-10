@@ -2,12 +2,14 @@ package lab.dev.meritoEstudantil.domain.empresa;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -17,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import lab.dev.meritoEstudantil.domain.gerente.Role;
+import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 
 @Entity
 @Table(name = "empresas_parceiras")
@@ -45,6 +48,9 @@ public class EmpresaParceira implements UserDetails {
 	@Column(nullable = false)
 	private Role role = Role.EMPRESA_PARCEIRA;
 
+	@OneToMany(mappedBy = "empresaParceira")
+	private List<Vantagem> vantagens = new ArrayList<>();
+
 	public Long getId() { return id; }
 	public String getEmail() { return email; }
 	public void setEmail(String email) { this.email = email; }
@@ -58,6 +64,9 @@ public class EmpresaParceira implements UserDetails {
 	public void setCnpj(String cnpj) { this.cnpj = cnpj; }
 	public Role getRole() { return role; }
 	public void setRole(Role role) { this.role = role; }
+
+	public List<Vantagem> getVantagens() { return vantagens; }
+	public void setVantagens(List<Vantagem> vantagens) { this.vantagens = vantagens; }
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

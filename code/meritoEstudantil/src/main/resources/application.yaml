@@ -47,3 +47,6 @@ springdoc:
     use-root-path: true
   api-docs:
     path: /v3/api-docs
+
+cloudinary:
+  url: ${CLOUDINARY_URL:cloudinary://945651648511159:pj_bt_SFV4qOkpOs0TTCxfbzJfQ@dd3szshbo}

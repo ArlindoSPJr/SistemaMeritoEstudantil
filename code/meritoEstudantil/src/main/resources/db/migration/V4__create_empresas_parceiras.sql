@@ -1,0 +1,11 @@
+-- V4: cria tabela empresas_parceiras
+
+CREATE TABLE IF NOT EXISTS empresas_parceiras (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  senha VARCHAR(255) NOT NULL,
+  nome_fantasia VARCHAR(255) NOT NULL,
+  razao_social VARCHAR(255) NOT NULL,
+  cnpj VARCHAR(50) NOT NULL UNIQUE,
+  role VARCHAR(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

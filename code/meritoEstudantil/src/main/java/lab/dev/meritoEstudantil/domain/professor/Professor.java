@@ -1,4 +1,4 @@
-package lab.dev.meritoEstudantil.domain.aluno;
+package lab.dev.meritoEstudantil.domain.professor;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,13 +14,16 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import lab.dev.meritoEstudantil.domain.gerente.Role;
+import lab.dev.meritoEstudantil.domain.instituicao.IInstituicaoEnsino;
 
 @Entity
-@Table(name = "aluno")
-public class Aluno implements UserDetails {
+@Table(name = "professor")
+public class Professor implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,45 +35,53 @@ public class Aluno implements UserDetails {
 	@Column(nullable = false)
 	private String senha;
 
-	@Column(nullable = false, unique = true)
-	private String cpf;
-
-	@Column(nullable = false, unique = true)
-	private String rg;
-
 	@Column(nullable = false)
 	private String nome;
 
+	@Column(nullable = false, unique = true)
+	private String cpf;
+
 	@Column(nullable = false)
-	private String endereco;
+	private String departamento;
 
 	@Column(nullable = false)
 	private Integer saldoMoedas = 0;
 
-	@Column(nullable = false)
-	private String curso;
+	@ManyToOne
+	@JoinColumn(name = "instituicao_ensino_id", nullable = false)
+	private IInstituicaoEnsino instituicaoEnsino;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Role role = Role.ALUNO;
+	private Role role = Role.PROFESSOR;
+
+	public Professor() {}
+
+	public Professor(String email, String senha, String nome, String cpf, String departamento, IInstituicaoEnsino instituicaoEnsino) {
+		this.email = email;
+		this.senha = senha;
+		this.nome = nome;
+		this.cpf = cpf;
+		this.departamento = departamento;
+		this.instituicaoEnsino = instituicaoEnsino;
+		this.role = Role.PROFESSOR;
+	}
 
 	public Long getId() { return id; }
 	public String getEmail() { return email; }
 	public void setEmail(String email) { this.email = email; }
 	public String getSenha() { return senha; }
 	public void setSenha(String senha) { this.senha = senha; }
-	public String getCpf() { return cpf; }
-	public void setCpf(String cpf) { this.cpf = cpf; }
-	public String getRg() { return rg; }
-	public void setRg(String rg) { this.rg = rg; }
 	public String getNome() { return nome; }
 	public void setNome(String nome) { this.nome = nome; }
-	public String getEndereco() { return endereco; }
-	public void setEndereco(String endereco) { this.endereco = endereco; }
+	public String getCpf() { return cpf; }
+	public void setCpf(String cpf) { this.cpf = cpf; }
+	public String getDepartamento() { return departamento; }
+	public void setDepartamento(String departamento) { this.departamento = departamento; }
 	public Integer getSaldoMoedas() { return saldoMoedas; }
 	public void setSaldoMoedas(Integer saldoMoedas) { this.saldoMoedas = saldoMoedas; }
-	public String getCurso() { return curso; }
-	public void setCurso(String curso) { this.curso = curso; }
+	public IInstituicaoEnsino getInstituicaoEnsino() { return instituicaoEnsino; }
+	public void setInstituicaoEnsino(IInstituicaoEnsino instituicaoEnsino) { this.instituicaoEnsino = instituicaoEnsino; }
 	public Role getRole() { return role; }
 	public void setRole(Role role) { this.role = role; }
 
@@ -109,5 +120,3 @@ public class Aluno implements UserDetails {
 		return true;
 	}
 }
-
-

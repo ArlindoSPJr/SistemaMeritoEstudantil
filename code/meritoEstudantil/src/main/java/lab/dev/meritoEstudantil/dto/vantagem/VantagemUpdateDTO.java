@@ -5,5 +5,6 @@ public record VantagemUpdateDTO(
     Boolean ativo,
     String imageUrl,
     Double custoMoedas,
+    Double quantidade,
     Long empresaParceiraId
 ) {}

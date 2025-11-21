@@ -27,9 +27,9 @@ public class TransacaoController {
 	private final ProfessorService professorService;
 	private final AlunoService alunoService;
 
-	public TransacaoController(TransacaoService transacaoService, 
-							   ProfessorService professorService,
-							   AlunoService alunoService) {
+	public TransacaoController(TransacaoService transacaoService,
+			ProfessorService professorService,
+			AlunoService alunoService) {
 		this.transacaoService = transacaoService;
 		this.professorService = professorService;
 		this.alunoService = alunoService;
@@ -37,8 +37,8 @@ public class TransacaoController {
 
 	@Operation(summary = "Listar todas as transações do professor autenticado")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Transações do professor"),
-		@ApiResponse(responseCode = "401", description = "Não autenticado")
+			@ApiResponse(responseCode = "200", description = "Transações do professor"),
+			@ApiResponse(responseCode = "401", description = "Não autenticado")
 	})
 	@GetMapping("/meu-professor")
 	@PreAuthorize("hasRole('PROFESSOR')")
@@ -55,8 +55,8 @@ public class TransacaoController {
 
 	@Operation(summary = "Listar todas as transações do aluno autenticado")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Transações do aluno"),
-		@ApiResponse(responseCode = "401", description = "Não autenticado")
+			@ApiResponse(responseCode = "200", description = "Transações do aluno"),
+			@ApiResponse(responseCode = "401", description = "Não autenticado")
 	})
 	@GetMapping("/meu-aluno")
 	@PreAuthorize("hasRole('ALUNO')")
@@ -73,9 +73,9 @@ public class TransacaoController {
 
 	@Operation(summary = "Listar todas as transações de um aluno específico (professor)")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Transações do aluno"),
-		@ApiResponse(responseCode = "401", description = "Não autenticado"),
-		@ApiResponse(responseCode = "404", description = "Aluno não encontrado")
+			@ApiResponse(responseCode = "200", description = "Transações do aluno"),
+			@ApiResponse(responseCode = "401", description = "Não autenticado"),
+			@ApiResponse(responseCode = "404", description = "Aluno não encontrado")
 	})
 	@GetMapping("/aluno/{alunoId}")
 	@PreAuthorize("hasRole('PROFESSOR')")
@@ -86,8 +86,8 @@ public class TransacaoController {
 
 	@Operation(summary = "Listar todas as transações do sistema (admin/gerente)")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Todas as transações"),
-		@ApiResponse(responseCode = "401", description = "Não autenticado")
+			@ApiResponse(responseCode = "200", description = "Todas as transações"),
+			@ApiResponse(responseCode = "401", description = "Não autenticado")
 	})
 	@GetMapping
 	@PreAuthorize("hasRole('GERENTE')")
@@ -96,17 +96,30 @@ public class TransacaoController {
 				.map(this::toTransacaoResponse).toList());
 	}
 
+
 	private TransacaoResponseDTO toTransacaoResponse(Transacao t) {
+		Long professorId = t.getProfessor() != null ? t.getProfessor().getId() : null;
+		String professorNome = t.getProfessor() != null ? t.getProfessor().getNome() : null;
+
+		Long alunoId = t.getAluno() != null ? t.getAluno().getId() : null;
+		String alunoNome = t.getAluno() != null ? t.getAluno().getNome() : null;
+
+		Long vantagemId = t.getVantagem() != null ? t.getVantagem().getId() : null;
+		String vantagemNome = t.getVantagem() != null ? t.getVantagem().getDescricao() : null; // ajuste se o getter tiver
+																							// outro nome
+
 		return new TransacaoResponseDTO(
-			t.getId(),
-			t.getProfessor().getId(),
-			t.getProfessor().getNome(),
-			t.getAluno().getId(),
-			t.getAluno().getNome(),
-			t.getQuantidadeMoedas(),
-			t.getTipo().toString(),
-			t.getDescricao(),
-			t.getDataCriacao()
-		);
+				t.getId(),
+				professorId,
+				professorNome,
+				alunoId,
+				alunoNome,
+				t.getQuantidadeMoedas(),
+				t.getTipo().toString(),
+				t.getDescricao(),
+				t.getDataCriacao(),
+				vantagemId,
+				vantagemNome);
 	}
+	
 }

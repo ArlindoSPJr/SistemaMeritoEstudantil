@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lab.dev.meritoEstudantil.domain.empresa.EmpresaParceira;
 import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
+import lab.dev.meritoEstudantil.repository.AlunoRepository;
 import lab.dev.meritoEstudantil.repository.EmpresaParceiraRepository;
 import lab.dev.meritoEstudantil.repository.VantagemRepository;
 
@@ -16,13 +17,17 @@ import lab.dev.meritoEstudantil.repository.VantagemRepository;
 public class VantagemService {
 
     private final VantagemRepository vantagemRepository;
+    private final AlunoRepository alunoRepository;
     private final CloudinaryService cloudinaryService;
     private final EmpresaParceiraRepository empresaParceiraRepository;
+    private final TransacaoService transacaoService;
 
-    public VantagemService(VantagemRepository vantagemRepository, CloudinaryService cloudinaryService, EmpresaParceiraRepository empresaParceiraRepository) {
+    public VantagemService(VantagemRepository vantagemRepository,TransacaoService transacaoService, AlunoRepository alunoRepository, CloudinaryService cloudinaryService, EmpresaParceiraRepository empresaParceiraRepository) {
         this.vantagemRepository = vantagemRepository;
+        this.alunoRepository = alunoRepository;
         this.empresaParceiraRepository = empresaParceiraRepository;
         this.cloudinaryService = cloudinaryService;
+        this.transacaoService = transacaoService;
     }
 
     public Vantagem create(Vantagem v) {
@@ -37,6 +42,10 @@ public class VantagemService {
         return vantagemRepository.findAllByEmpresaParceiraId(id);
     }
 
+    public List<Vantagem> getAlunoVantagens(Long alunoId) {
+        var aluno = alunoRepository.findById(alunoId).orElseThrow();
+        return aluno.getVantagens();
+    }
     
     public List<Vantagem> findAll() {
         return vantagemRepository.findAll();
@@ -72,5 +81,39 @@ public class VantagemService {
 
     public void delete(Long id) {
         vantagemRepository.deleteById(id);
+    }
+
+    public void resgatarVantagem(Long vantagemId, Long alunoId) {
+        
+        var vantagem = vantagemRepository.findById(vantagemId).orElseThrow();
+        var aluno = alunoRepository.findById(alunoId).orElseThrow();
+
+        if (!vantagem.isAtivo()) {
+            throw new RuntimeException("Vantagem inativa.");
+        }
+
+        if (vantagem.getQuantidade() <= 0) {
+            throw new RuntimeException("Vantagem esgotada.");
+        }
+
+        if (aluno.getSaldoMoedas() < vantagem.getCustoMoedas()) {
+            throw new RuntimeException("Saldo insuficiente de moedas.");
+        }
+
+        if (aluno.getVantagens().stream().anyMatch(v -> v.getId().equals(vantagemId))) {
+            throw new RuntimeException("Vantagem já resgatada por este aluno.");
+        }
+
+        aluno.setSaldoMoedas((int)(aluno.getSaldoMoedas() - vantagem.getCustoMoedas()));
+        vantagem.setQuantidade(vantagem.getQuantidade() - 1);
+
+        vantagem.addAluno(aluno);
+        aluno.addVantagem(vantagem);
+
+        transacaoService.registrarResgate(alunoId, vantagemId, vantagem.getCustoMoedas());
+        
+        alunoRepository.save(aluno);
+        vantagemRepository.save(vantagem);
+
     }
 }

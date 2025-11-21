@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS vantagens (
   image_url VARCHAR(500),
   custo_moedas DOUBLE NOT NULL,
   empresa_parceira_id BIGINT,
+  quantidade DOUBLE DEFAULT 0,
   CONSTRAINT fk_vantagem_empresa FOREIGN KEY (empresa_parceira_id)
     REFERENCES empresas_parceiras(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

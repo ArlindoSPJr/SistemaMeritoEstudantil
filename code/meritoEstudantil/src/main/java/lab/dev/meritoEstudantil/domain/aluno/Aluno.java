@@ -14,9 +14,14 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import lab.dev.meritoEstudantil.domain.gerente.Role;
+import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 
 @Entity
 @Table(name = "aluno")
@@ -54,6 +59,14 @@ public class Aluno implements UserDetails {
 	@Column(nullable = false)
 	private Role role = Role.ALUNO;
 
+	@ManyToMany
+	@JoinTable(
+		name = "aluno_vantagens",
+		joinColumns = @JoinColumn(name = "aluno_id"),
+		inverseJoinColumns = @JoinColumn(name = "vantagem_id")
+	)
+	private List<Vantagem> vantagens;
+
 	public Long getId() { return id; }
 	public String getEmail() { return email; }
 	public void setEmail(String email) { this.email = email; }
@@ -73,6 +86,11 @@ public class Aluno implements UserDetails {
 	public void setCurso(String curso) { this.curso = curso; }
 	public Role getRole() { return role; }
 	public void setRole(Role role) { this.role = role; }
+	public List<Vantagem> getVantagens() { return vantagens; }
+	public void setVantagens(List<Vantagem> vantagens) { this.vantagens = vantagens; }
+	public void addVantagem(Vantagem vantagem) {
+		this.vantagens.add(vantagem);
+	}	
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

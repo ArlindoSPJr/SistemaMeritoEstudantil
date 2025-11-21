@@ -9,11 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import lab.dev.meritoEstudantil.domain.aluno.Aluno;
 import lab.dev.meritoEstudantil.domain.professor.Professor;
 import lab.dev.meritoEstudantil.domain.transacao.Transacao;
+import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 import lab.dev.meritoEstudantil.domain.transacao.TipoTransacao;
 import lab.dev.meritoEstudantil.dto.transacao.EnviarMoedasDTO;
 import lab.dev.meritoEstudantil.repository.AlunoRepository;
 import lab.dev.meritoEstudantil.repository.ProfessorRepository;
 import lab.dev.meritoEstudantil.repository.TransacaoRepository;
+import lab.dev.meritoEstudantil.repository.VantagemRepository;
 
 @Service
 @Transactional
@@ -22,16 +24,19 @@ public class TransacaoService {
 	private final TransacaoRepository transacaoRepository;
 	private final ProfessorRepository professorRepository;
 	private final AlunoRepository alunoRepository;
+	private final VantagemRepository vantagemRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	public TransacaoService(TransacaoRepository transacaoRepository, 
-							ProfessorRepository professorRepository, 
-							AlunoRepository alunoRepository,
-							PasswordEncoder passwordEncoder) {
+	public TransacaoService(TransacaoRepository transacaoRepository,
+			ProfessorRepository professorRepository,
+			AlunoRepository alunoRepository,
+			PasswordEncoder passwordEncoder,
+			VantagemRepository vantagemRepository) {
 		this.transacaoRepository = transacaoRepository;
 		this.professorRepository = professorRepository;
 		this.alunoRepository = alunoRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.vantagemRepository = vantagemRepository;
 	}
 
 	public Transacao enviarMoedas(Long professorId, EnviarMoedasDTO dto) {
@@ -51,7 +56,24 @@ public class TransacaoService {
 		professorRepository.save(professor);
 		alunoRepository.save(aluno);
 
-		Transacao transacao = new Transacao(professor, aluno, dto.quantidadeMoedas(), TipoTransacao.ENVIO, dto.descricao());
+		Transacao transacao = new Transacao(professor, aluno, dto.quantidadeMoedas(), TipoTransacao.ENVIO,
+				dto.descricao());
+		return transacaoRepository.save(transacao);
+	}
+
+	public Transacao registrarResgate(Long alunoId, Long vantagemId, double valor) {
+		Aluno aluno = alunoRepository.findById(alunoId)
+				.orElseThrow(() -> new RuntimeException("Aluno não encontrado com ID: " + alunoId));
+		Vantagem vantagem = vantagemRepository.findById(vantagemId)
+				.orElseThrow(() -> new RuntimeException("Vantagem não encontrada com ID: " + vantagemId));
+
+		Transacao transacao = new Transacao(
+				null, // professor é null no resgate
+				aluno,
+				(int)valor,
+				TipoTransacao.RESGATE, 
+				null);
+		transacao.setVantagem(vantagem); // se existir esse campo na entidade Transacao
 		return transacaoRepository.save(transacao);
 	}
 

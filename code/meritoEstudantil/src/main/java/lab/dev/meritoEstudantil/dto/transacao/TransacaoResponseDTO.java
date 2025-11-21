@@ -2,6 +2,7 @@ package lab.dev.meritoEstudantil.dto.transacao;
 
 import java.time.LocalDateTime;
 
+
 public record TransacaoResponseDTO(
 	Long id,
 	Long professorId,
@@ -11,5 +12,7 @@ public record TransacaoResponseDTO(
 	Integer quantidadeMoedas,
 	String tipo,
 	String descricao,
-	LocalDateTime dataCriacao
+	LocalDateTime dataCriacao,
+	Long vantagemId,
+	String vantagemNome
 ) {}

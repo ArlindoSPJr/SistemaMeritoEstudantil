@@ -11,10 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import lab.dev.meritoEstudantil.domain.aluno.Aluno;
 import lab.dev.meritoEstudantil.domain.professor.Professor;
+import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 
 @Entity
 @Table(name = "transacoes")
@@ -25,7 +27,7 @@ public class Transacao {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "professor_id", nullable = false)
+	@JoinColumn(name = "professor_id", nullable = true)
 	private Professor professor;
 
 	@ManyToOne
@@ -45,6 +47,10 @@ public class Transacao {
 	@Column(nullable = false)
 	private LocalDateTime dataCriacao;
 
+	@ManyToOne
+	@JoinColumn(name = "vantagem_id", nullable = true)
+	private Vantagem vantagem;
+
 	public Transacao() {
 		this.dataCriacao = LocalDateTime.now();
 	}
@@ -58,18 +64,67 @@ public class Transacao {
 		this.dataCriacao = LocalDateTime.now();
 	}
 
-	public Long getId() { return id; }
-	public void setId(Long id) { this.id = id; }
-	public Professor getProfessor() { return professor; }
-	public void setProfessor(Professor professor) { this.professor = professor; }
-	public Aluno getAluno() { return aluno; }
-	public void setAluno(Aluno aluno) { this.aluno = aluno; }
-	public Integer getQuantidadeMoedas() { return quantidadeMoedas; }
-	public void setQuantidadeMoedas(Integer quantidadeMoedas) { this.quantidadeMoedas = quantidadeMoedas; }
-	public TipoTransacao getTipo() { return tipo; }
-	public void setTipo(TipoTransacao tipo) { this.tipo = tipo; }
-	public String getDescricao() { return descricao; }
-	public void setDescricao(String descricao) { this.descricao = descricao; }
-	public LocalDateTime getDataCriacao() { return dataCriacao; }
-	public void setDataCriacao(LocalDateTime dataCriacao) { this.dataCriacao = dataCriacao; }
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Professor getProfessor() {
+		return professor;
+	}
+
+	public void setProfessor(Professor professor) {
+		this.professor = professor;
+	}
+
+	public Aluno getAluno() {
+		return aluno;
+	}
+
+	public void setAluno(Aluno aluno) {
+		this.aluno = aluno;
+	}
+
+	public Integer getQuantidadeMoedas() {
+		return quantidadeMoedas;
+	}
+
+	public void setQuantidadeMoedas(Integer quantidadeMoedas) {
+		this.quantidadeMoedas = quantidadeMoedas;
+	}
+
+	public TipoTransacao getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoTransacao tipo) {
+		this.tipo = tipo;
+	}
+
+	public String getDescricao() {
+		return descricao;
+	}
+
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+
+	public LocalDateTime getDataCriacao() {
+		return dataCriacao;
+	}
+
+	public void setDataCriacao(LocalDateTime dataCriacao) {
+		this.dataCriacao = dataCriacao;
+	}
+
+	public Vantagem getVantagem() {
+		return vantagem;
+	}
+
+	public void setVantagem(Vantagem vantagem) {
+		this.vantagem = vantagem;
+	}
 }

@@ -7,5 +7,6 @@ public record VantagemResponseDTO(
     String imageUrl,
     double custoMoedas,
     Long empresaParceiraId,
-    String empresaNome
+    String empresaNome,
+    double quantidade
 ) {}

@@ -25,6 +25,7 @@ import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemCreateDTO;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemResponseDTO;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemUpdateDTO;
+import lab.dev.meritoEstudantil.dto.vantagem.ResgatarVantagemDTO;
 import lab.dev.meritoEstudantil.service.VantagemService;
 
 @RestController
@@ -41,6 +42,7 @@ public class VantagemController {
         v.setDescricao(dto.descricao());
         v.setAtivo(true);
         v.setCustoMoedas(dto.custoMoedas());
+        v.setQuantidade(dto.quantidade());
         if (dto.empresaParceiraId() != null) {
             EmpresaParceira empresa = new EmpresaParceira();
             try {
@@ -54,6 +56,12 @@ public class VantagemController {
         }
         Vantagem saved = vantagemService.create(v);
         return ResponseEntity.ok(toResponse(saved));
+    }
+
+    // LISTA VANTAGENS DE UM ALUNO
+    @GetMapping("/aluno/{alunoId}")
+    public ResponseEntity<List<VantagemResponseDTO>> getAlunoVantagens(@PathVariable Long alunoId) {
+        return ResponseEntity.ok(vantagemService.getAlunoVantagens(alunoId).stream().map(this::toResponse).toList());
     }
 
 
@@ -86,6 +94,8 @@ public class VantagemController {
             update.setImageUrl(dto.imageUrl());
         if (dto.custoMoedas() != null)
             update.setCustoMoedas(dto.custoMoedas());
+        if (dto.quantidade() != null)
+            update.setQuantidade(dto.quantidade());
         if (dto.empresaParceiraId() != null) {
             EmpresaParceira empresa = new EmpresaParceira();
             try {
@@ -119,6 +129,19 @@ public class VantagemController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Resgate uma vantagem como aluno")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Vantagem resgatada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Erro no resgate (saldo insuficiente, vantagem inativa ou esgotada)"),
+            @ApiResponse(responseCode = "404", description = "Vantagem ou aluno não encontrado")
+    })
+    @PostMapping("/{id}/resgatar")
+    @PreAuthorize("hasRole('ALUNO')")
+    public ResponseEntity<Void> resgatarVantagem(@PathVariable Long id, @RequestBody ResgatarVantagemDTO dto) {
+        vantagemService.resgatarVantagem(id, dto.alunoId());
+        return ResponseEntity.noContent().build();
+    }
+
     private VantagemResponseDTO toResponse(Vantagem e) {
         Long empresaId = e.getEmpresaParceira() != null ? e.getEmpresaParceira().getId() : null;
         String empresaNome = e.getEmpresaParceira() != null ? e.getEmpresaParceira().getNomeFantasia() : null;
@@ -129,6 +152,7 @@ public class VantagemController {
                 e.getImageUrl(),
                 e.getCustoMoedas(),
                 empresaId,
-                empresaNome);
+                empresaNome,
+                e.getQuantidade());
     }
 }

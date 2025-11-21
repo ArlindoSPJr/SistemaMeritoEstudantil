@@ -78,9 +78,9 @@ public class ProfessorController {
 
 	@Operation(summary = "Professor envia moedas para um aluno")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "Moedas enviadas com sucesso"),
-		@ApiResponse(responseCode = "400", description = "Erro na validação"),
-		@ApiResponse(responseCode = "401", description = "Não autenticado")
+			@ApiResponse(responseCode = "200", description = "Moedas enviadas com sucesso"),
+			@ApiResponse(responseCode = "400", description = "Erro na validação"),
+			@ApiResponse(responseCode = "401", description = "Não autenticado")
 	})
 	@PostMapping("/enviar-moedas")
 	@PreAuthorize("hasRole('PROFESSOR')")
@@ -106,27 +106,37 @@ public class ProfessorController {
 
 	private ProfessorResponseDTO toResponse(Professor p) {
 		return new ProfessorResponseDTO(
-			p.getId(),
-			p.getEmail(),
-			p.getNome(),
-			p.getCpf(),
-			p.getDepartamento(),
-			p.getSaldoMoedas(),
-			p.getInstituicaoEnsino() != null ? p.getInstituicaoEnsino().getId() : null
-		);
+				p.getId(),
+				p.getEmail(),
+				p.getNome(),
+				p.getCpf(),
+				p.getDepartamento(),
+				p.getSaldoMoedas(),
+				p.getInstituicaoEnsino() != null ? p.getInstituicaoEnsino().getId() : null);
 	}
 
 	private TransacaoResponseDTO toTransacaoResponse(Transacao t) {
+		Long professorId = t.getProfessor() != null ? t.getProfessor().getId() : null;
+		String professorNome = t.getProfessor() != null ? t.getProfessor().getNome() : null;
+
+		Long alunoId = t.getAluno() != null ? t.getAluno().getId() : null;
+		String alunoNome = t.getAluno() != null ? t.getAluno().getNome() : null;
+
+		Long vantagemId = t.getVantagem() != null ? t.getVantagem().getId() : null;
+		String vantagemNome = t.getVantagem() != null ? t.getVantagem().getDescricao() : null; // ajuste se o getter tiver
+																							// outro nome
+
 		return new TransacaoResponseDTO(
-			t.getId(),
-			t.getProfessor().getId(),
-			t.getProfessor().getNome(),
-			t.getAluno().getId(),
-			t.getAluno().getNome(),
-			t.getQuantidadeMoedas(),
-			t.getTipo().toString(),
-			t.getDescricao(),
-			t.getDataCriacao()
-		);
+				t.getId(),
+				professorId,
+				professorNome,
+				alunoId,
+				alunoNome,
+				t.getQuantidadeMoedas(),
+				t.getTipo().toString(),
+				t.getDescricao(),
+				t.getDataCriacao(),
+				vantagemId,
+				vantagemNome);
 	}
 }

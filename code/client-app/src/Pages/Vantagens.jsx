@@ -6,14 +6,17 @@ import Header from '../Components/header';
 import ModalCriarVantagem from '../Components/ModalCriarvantagem';
 import ModalExcluir from '../Components/ModalExcluir';
 import ModalEditarVantagem from '../Components/ModalEditarVantagem';
+import ModalResgatarVantagem from '../Components/ModalResgatarVantagem';
 
 export default function Vantagens() {
   const [vantagens, setVantagens] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showResgatarModal, setShowResgatarModal] = useState(false);
   const [vantagemToDelete, setVantagemToDelete] = useState(null);
   const [vantagemToEdit, setVantagemToEdit] = useState(null);
+  const [vantagemToResgatar, setVantagemToResgatar] = useState(null);
 
   // Verificar se é empresa parceira
   const isEmpresaParceira = LoginService.hasRole('EMPRESA_PARCEIRA');
@@ -77,6 +80,21 @@ export default function Vantagens() {
     );
   };
 
+  const handleResgatar = (vantagem) => {
+    setVantagemToResgatar(vantagem);
+    setShowResgatarModal(true);
+  };
+
+  const closeResgatarModal = () => {
+    setShowResgatarModal(false);
+    setVantagemToResgatar(null);
+  };
+
+  const handleResgatarSuccess = () => {
+    // Recarregar lista de vantagens após resgate
+    setVantagens([]);
+  };
+
   return (
     <div className={styles.container}>
       <Header />
@@ -108,11 +126,24 @@ export default function Vantagens() {
               <div className={styles.cardContent}>
                 <h3 className={styles.cardTitle}>{vantagem.descricao}</h3>
                 <p className={styles.cardPrice}>Custo: {vantagem.custoMoedas} moedas</p>
+                <p className={styles.cardQuantity}>Quantidade: {vantagem.quantidade}</p>
                 {!isEmpresaParceira && vantagem.empresaNome && (
                   <p className={styles.cardCompany}>Empresa: {vantagem.empresaNome}</p>
                 )}
               </div>
             </div>
+            {!isEmpresaParceira && (
+              <div className={styles.cardActions}>
+                <button 
+                  className={styles.resgatarButton} 
+                  title="Resgatar Vantagem"
+                  onClick={() => handleResgatar(vantagem)}
+                  disabled={!vantagem.ativo || vantagem.quantidade <= 0}
+                >
+                  🎁 Resgatar
+                </button>
+              </div>
+            )}
             {isEmpresaParceira && (
               <div className={styles.cardActions}>
                 <button 
@@ -147,6 +178,13 @@ export default function Vantagens() {
           vantagem={vantagemToEdit}
           onClose={closeEditModal}
           onSuccess={handleEditSuccess}
+        />
+      )}
+      {!isEmpresaParceira && showResgatarModal && vantagemToResgatar && (
+        <ModalResgatarVantagem 
+          vantagem={vantagemToResgatar}
+          onClose={closeResgatarModal}
+          onSuccess={handleResgatarSuccess}
         />
       )}
     </div>

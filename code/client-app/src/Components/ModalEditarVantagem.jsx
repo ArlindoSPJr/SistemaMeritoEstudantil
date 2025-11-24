@@ -7,6 +7,7 @@ export default function ModalEditarVantagem({ vantagem, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     descricao: '',
     custoMoedas: '',
+    quantidade: '',
     ativo: true,
     image: null
   });
@@ -18,6 +19,7 @@ export default function ModalEditarVantagem({ vantagem, onClose, onSuccess }) {
       setFormData({
         descricao: vantagem.descricao || '',
         custoMoedas: vantagem.custoMoedas?.toString() || '',
+        quantidade: vantagem.quantidade?.toString() || '0',
         ativo: vantagem.ativo !== undefined ? vantagem.ativo : true,
         image: null
       });
@@ -44,11 +46,14 @@ export default function ModalEditarVantagem({ vantagem, onClose, onSuccess }) {
       const updateData = {
         descricao: formData.descricao,
         custoMoedas: parseFloat(formData.custoMoedas),
+        quantidade: parseFloat(formData.quantidade),
         ativo: formData.ativo,
         imageUrl: vantagem.imageUrl // Preserva a imagem atual
       };
 
+      console.log('Dados sendo enviados para atualização:', updateData);
       const updated = await VantagensService.update(vantagem.id, updateData);
+      console.log('Vantagem atualizada:', updated);
       setUpdatedVantagem(updated);
       setStep(2);
     } catch (error) {
@@ -121,6 +126,19 @@ export default function ModalEditarVantagem({ vantagem, onClose, onSuccess }) {
                 type="number"
                 step="0.01"
                 value={formData.custoMoedas || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div>
+              <label className={styles.label} htmlFor="quantidade">Quantidade</label>
+              <input
+                id="quantidade"
+                name="quantidade"
+                className={styles.input}
+                type="number"
+                value={formData.quantidade}
                 onChange={handleChange}
                 required
               />

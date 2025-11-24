@@ -61,6 +61,7 @@ public class VantagemService {
         current.setAtivo(update.isAtivo());
         current.setImageUrl(update.getImageUrl());
         current.setCustoMoedas(update.getCustoMoedas());
+        current.setQuantidade(update.getQuantidade());
         if (update.getEmpresaParceira() != null && update.getEmpresaParceira().getId() != null) {
             EmpresaParceira e = empresaParceiraRepository.findById(update.getEmpresaParceira().getId()).orElseThrow();
             current.setEmpresaParceira(e);

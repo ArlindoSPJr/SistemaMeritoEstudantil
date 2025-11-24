@@ -60,6 +60,13 @@ class VantagensService {
     });
     return response.data;
   }
+
+  async resgatar(vantagemId, alunoId) {
+    await axios.post(`${API_URL}/${vantagemId}/resgatar`, 
+      { alunoId },
+      { headers: this.getHeaders() }
+    );
+  }
 }
 
 export default new VantagensService();

@@ -26,11 +26,47 @@ html, body, #root {
   padding: 0 40px;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 24px 0;
+  padding: 0 20px;
+}
+
 .title {
   color: var(--white);
   font-size: 32px;
-  margin: 24px 0;
-  text-align: center;
+  margin: 0;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 12px;
+}
+
+.filterButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  color: white;
+}
+
+.filterButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.filterButton.active {
+  background: linear-gradient(90deg, var(--accent-from), var(--accent-to));
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
 
 .list {
@@ -38,9 +74,9 @@ html, body, #root {
   padding: 20px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(700px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  max-width: 1200px;
+  max-width: 1400px;
 }
 
 .listItem {

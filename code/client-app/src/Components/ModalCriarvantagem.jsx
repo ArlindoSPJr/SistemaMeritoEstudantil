@@ -9,6 +9,7 @@ export default function ModalCriarVantagem({ onClose }) {
   const [formData, setFormData] = useState({
     descricao: '',
     custoMoedas: '',
+    quantidade: '',
     image: null
   });
 
@@ -33,6 +34,7 @@ export default function ModalCriarVantagem({ onClose }) {
       const vantagemData = {
         descricao: formData.descricao,
         custoMoedas: parseFloat(formData.custoMoedas),
+        quantidade: parseFloat(formData.quantidade),
         empresaParceiraId: empresaId
       };
 
@@ -84,6 +86,18 @@ export default function ModalCriarVantagem({ onClose }) {
                 className={styles.input}
                 type="number"
                 value={formData.custoMoedas || ''}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label className={styles.label} htmlFor="quantidade">Quantidade</label>
+              <input
+                id="quantidade"
+                name="quantidade"
+                className={styles.input}
+                type="number"
+                value={formData.quantidade || ''}
                 onChange={handleChange}
                 required
               />

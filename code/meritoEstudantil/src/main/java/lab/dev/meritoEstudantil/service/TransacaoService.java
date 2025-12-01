@@ -26,17 +26,20 @@ public class TransacaoService {
 	private final AlunoRepository alunoRepository;
 	private final VantagemRepository vantagemRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final EmailService emailService;
 
 	public TransacaoService(TransacaoRepository transacaoRepository,
 			ProfessorRepository professorRepository,
 			AlunoRepository alunoRepository,
 			PasswordEncoder passwordEncoder,
-			VantagemRepository vantagemRepository) {
+			VantagemRepository vantagemRepository,
+			EmailService emailService) {
 		this.transacaoRepository = transacaoRepository;
 		this.professorRepository = professorRepository;
 		this.alunoRepository = alunoRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.vantagemRepository = vantagemRepository;
+		this.emailService = emailService;
 	}
 
 	public Transacao enviarMoedas(Long professorId, EnviarMoedasDTO dto) {
@@ -58,6 +61,9 @@ public class TransacaoService {
 
 		Transacao transacao = new Transacao(professor, aluno, dto.quantidadeMoedas(), TipoTransacao.ENVIO,
 				dto.descricao());
+
+		emailService.sendEmailEnvioMoedas(professor, aluno, dto.quantidadeMoedas(), dto.descricao());
+
 		return transacaoRepository.save(transacao);
 	}
 

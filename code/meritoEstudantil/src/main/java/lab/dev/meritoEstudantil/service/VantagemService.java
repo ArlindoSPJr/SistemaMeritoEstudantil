@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.constraints.Email;
 import lab.dev.meritoEstudantil.domain.empresa.EmpresaParceira;
 import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 import lab.dev.meritoEstudantil.repository.AlunoRepository;
@@ -21,13 +22,15 @@ public class VantagemService {
     private final CloudinaryService cloudinaryService;
     private final EmpresaParceiraRepository empresaParceiraRepository;
     private final TransacaoService transacaoService;
+    private final EmailService emailService;
 
-    public VantagemService(VantagemRepository vantagemRepository,TransacaoService transacaoService, AlunoRepository alunoRepository, CloudinaryService cloudinaryService, EmpresaParceiraRepository empresaParceiraRepository) {
+    public VantagemService(EmailService emailService, VantagemRepository vantagemRepository,TransacaoService transacaoService, AlunoRepository alunoRepository, CloudinaryService cloudinaryService, EmpresaParceiraRepository empresaParceiraRepository) {
         this.vantagemRepository = vantagemRepository;
         this.alunoRepository = alunoRepository;
         this.empresaParceiraRepository = empresaParceiraRepository;
         this.cloudinaryService = cloudinaryService;
         this.transacaoService = transacaoService;
+        this.emailService = emailService;
     }
 
     public Vantagem create(Vantagem v) {
@@ -112,6 +115,8 @@ public class VantagemService {
         aluno.addVantagem(vantagem);
 
         transacaoService.registrarResgate(alunoId, vantagemId, vantagem.getCustoMoedas());
+
+        emailService.sendResgateConfirmationEmail(aluno, vantagem.getEmpresaParceira(), vantagem);
         
         alunoRepository.save(aluno);
         vantagemRepository.save(vantagem);

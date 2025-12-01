@@ -1,0 +1,67 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36" version="29.2.1">
+  <diagram name="Página-1" id="FhXWjb8HQLIFAIRiSoku">
+    <mxGraphModel dx="1111" dy="1668" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-1" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" value="Professor" vertex="1">
+          <mxGeometry height="60" width="30" x="120" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-13" edge="1" parent="1" source="Kgbd37PyzDLHiDM1DZyl-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Kgbd37PyzDLHiDM1DZyl-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-4" parent="1" style="html=1;whiteSpace=wrap;" value="Sistema:Controlador" vertex="1">
+          <mxGeometry height="50" width="110" x="280" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-5" parent="1" style="html=1;whiteSpace=wrap;" value="ContaProfessor:Conta" vertex="1">
+          <mxGeometry height="50" width="140" x="500" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-6" parent="1" style="html=1;whiteSpace=wrap;" value="ContaAluno:Conta" vertex="1">
+          <mxGeometry height="50" width="140" x="265" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-7" parent="1" style="html=1;whiteSpace=wrap;" value="ServiçoEmail: ServiçoExterno" vertex="1">
+          <mxGeometry height="50" width="140" x="150" y="-70" as="geometry" />
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-8" edge="1" parent="1" source="Kgbd37PyzDLHiDM1DZyl-1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="Kgbd37PyzDLHiDM1DZyl-4" value="1 -enviarMoeda(id, valor)">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="180" y="130" as="sourcePoint" />
+            <mxPoint x="260" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-10" edge="1" parent="1" source="Kgbd37PyzDLHiDM1DZyl-4" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" target="Kgbd37PyzDLHiDM1DZyl-5" value="2- debitar(valor)">
+          <mxGeometry relative="1" width="80" x="-0.0893" y="4" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="340" y="140" as="sourcePoint" />
+            <mxPoint x="510" y="130" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-12" edge="1" parent="1" source="Kgbd37PyzDLHiDM1DZyl-4" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="Kgbd37PyzDLHiDM1DZyl-6" value="3- creditar(valor)">
+          <mxGeometry relative="1" width="80" y="45" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="400" y="202" as="sourcePoint" />
+            <mxPoint x="510" y="200" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-14" edge="1" parent="1" source="Kgbd37PyzDLHiDM1DZyl-4" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="Kgbd37PyzDLHiDM1DZyl-7" value="4- enviarConfirmacao(emailProfessor)">
+          <mxGeometry relative="1" width="80" x="0.808" y="84" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="340" y="20" as="sourcePoint" />
+            <mxPoint x="335" y="13" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="Kgbd37PyzDLHiDM1DZyl-15" edge="1" parent="1" source="Kgbd37PyzDLHiDM1DZyl-4" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="Kgbd37PyzDLHiDM1DZyl-7" value="5- enviarConfirmacao(emailAluno)">
+          <mxGeometry relative="1" width="80" x="0.0348" y="-87" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="363" y="-40" />
+              <mxPoint x="350" y="-40" />
+            </Array>
+            <mxPoint x="455" y="180" as="sourcePoint" />
+            <mxPoint x="380" y="80" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

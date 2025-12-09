@@ -23,6 +23,7 @@ import lab.dev.meritoEstudantil.dto.professor.ProfessorCreateDTO;
 import lab.dev.meritoEstudantil.dto.professor.ProfessorResponseDTO;
 import lab.dev.meritoEstudantil.dto.transacao.EnviarMoedasDTO;
 import lab.dev.meritoEstudantil.dto.transacao.TransacaoResponseDTO;
+import lab.dev.meritoEstudantil.mapper.ProfessorMapper;
 import lab.dev.meritoEstudantil.service.ProfessorService;
 import lab.dev.meritoEstudantil.service.TransacaoService;
 
@@ -32,42 +33,36 @@ public class ProfessorController {
 
 	private final ProfessorService professorService;
 	private final TransacaoService transacaoService;
+	private final ProfessorMapper mapper;
 
-	public ProfessorController(ProfessorService professorService, TransacaoService transacaoService) {
+	public ProfessorController(ProfessorService professorService, TransacaoService transacaoService, ProfessorMapper mapper) {
 		this.professorService = professorService;
 		this.transacaoService = transacaoService;
+		this.mapper = mapper;
 	}
 
 	@PostMapping
 	public ResponseEntity<ProfessorResponseDTO> create(@RequestBody ProfessorCreateDTO dto) {
-		Professor professor = new Professor();
-		professor.setEmail(dto.email());
-		professor.setSenha(dto.senha());
-		professor.setNome(dto.nome());
-		professor.setCpf(dto.cpf());
-		professor.setDepartamento(dto.departamento());
+		Professor professor = mapper.toEntity(dto);
 		Professor saved = professorService.create(professor);
-		return ResponseEntity.ok(toResponse(saved));
+		return ResponseEntity.ok(mapper.toResponseDTO(saved));
 	}
 
 	@GetMapping
 	public ResponseEntity<List<ProfessorResponseDTO>> list() {
-		return ResponseEntity.ok(professorService.findAll().stream().map(this::toResponse).toList());
+		return ResponseEntity.ok(professorService.findAll().stream().map(mapper::toResponseDTO).toList());
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<ProfessorResponseDTO> get(@PathVariable Long id) {
-		return ResponseEntity.ok(toResponse(professorService.findById(id)));
+		return ResponseEntity.ok(mapper.toResponseDTO(professorService.findById(id)));
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ProfessorResponseDTO> update(@PathVariable Long id, @RequestBody ProfessorCreateDTO dto) {
-		Professor update = new Professor();
-		update.setNome(dto.nome());
-		update.setEmail(dto.email());
-		update.setDepartamento(dto.departamento());
+		Professor update = mapper.toEntityForUpdate(dto);
 		Professor saved = professorService.update(id, update);
-		return ResponseEntity.ok(toResponse(saved));
+		return ResponseEntity.ok(mapper.toResponseDTO(saved));
 	}
 
 	@DeleteMapping("/{id}")
@@ -104,17 +99,6 @@ public class ProfessorController {
 				.map(this::toTransacaoResponse).toList());
 	}
 
-	private ProfessorResponseDTO toResponse(Professor p) {
-		return new ProfessorResponseDTO(
-				p.getId(),
-				p.getEmail(),
-				p.getNome(),
-				p.getCpf(),
-				p.getDepartamento(),
-				p.getSaldoMoedas(),
-				p.getInstituicaoEnsino() != null ? p.getInstituicaoEnsino().getId() : null);
-	}
-
 	private TransacaoResponseDTO toTransacaoResponse(Transacao t) {
 		Long professorId = t.getProfessor() != null ? t.getProfessor().getId() : null;
 		String professorNome = t.getProfessor() != null ? t.getProfessor().getNome() : null;
@@ -123,8 +107,7 @@ public class ProfessorController {
 		String alunoNome = t.getAluno() != null ? t.getAluno().getNome() : null;
 
 		Long vantagemId = t.getVantagem() != null ? t.getVantagem().getId() : null;
-		String vantagemNome = t.getVantagem() != null ? t.getVantagem().getDescricao() : null; // ajuste se o getter tiver
-																							// outro nome
+		String vantagemNome = t.getVantagem() != null ? t.getVantagem().getDescricao() : null;
 
 		return new TransacaoResponseDTO(
 				t.getId(),

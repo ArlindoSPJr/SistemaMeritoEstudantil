@@ -16,6 +16,7 @@ import lab.dev.meritoEstudantil.domain.aluno.Aluno;
 import lab.dev.meritoEstudantil.dto.aluno.AlunoCreateDTO;
 import lab.dev.meritoEstudantil.dto.aluno.AlunoResponseDTO;
 import lab.dev.meritoEstudantil.dto.aluno.AlunoUpdateDTO;
+import lab.dev.meritoEstudantil.mapper.AlunoMapper;
 import lab.dev.meritoEstudantil.service.AlunoService;
 
 @RestController
@@ -23,49 +24,35 @@ import lab.dev.meritoEstudantil.service.AlunoService;
 public class AlunoController {
 
 	private final AlunoService alunoService;
+	private final AlunoMapper mapper;
 
-	public AlunoController(AlunoService alunoService) {
+	public AlunoController(AlunoService alunoService, AlunoMapper mapper) {
 		this.alunoService = alunoService;
+		this.mapper = mapper;
 	}
 
     @PostMapping
     public ResponseEntity<AlunoResponseDTO> create(@RequestBody AlunoCreateDTO dto) {
-        Aluno aluno = new Aluno();
-        aluno.setEmail(dto.email());
-        aluno.setSenha(dto.senha());
-        aluno.setCpf(dto.cpf());
-        aluno.setRg(dto.rg());
-        aluno.setNome(dto.nome());
-        aluno.setEndereco(dto.endereco());
-        if (dto.saldoMoedas() != null) aluno.setSaldoMoedas(dto.saldoMoedas());
-        aluno.setCurso(dto.curso());
+        Aluno aluno = mapper.toEntity(dto);
         Aluno saved = alunoService.create(aluno);
-        return ResponseEntity.ok(toResponse(saved));
+        return ResponseEntity.ok(mapper.toResponseDTO(saved));
     }
 
 	@GetMapping
     public ResponseEntity<List<AlunoResponseDTO>> list() {
-        return ResponseEntity.ok(alunoService.findAll().stream().map(this::toResponse).toList());
+        return ResponseEntity.ok(alunoService.findAll().stream().map(mapper::toResponseDTO).toList());
 	}
 
 	@GetMapping("/{id}")
     public ResponseEntity<AlunoResponseDTO> get(@PathVariable Long id) {
-        return ResponseEntity.ok(toResponse(alunoService.findById(id)));
+        return ResponseEntity.ok(mapper.toResponseDTO(alunoService.findById(id)));
 	}
 
 	@PutMapping("/{id}")
     public ResponseEntity<AlunoResponseDTO> update(@PathVariable Long id, @RequestBody AlunoUpdateDTO dto) {
-        Aluno update = new Aluno();
-        update.setEmail(dto.email());
-        update.setSenha(dto.senha());
-        update.setCpf(dto.cpf());
-        update.setRg(dto.rg());
-        update.setNome(dto.nome());
-        update.setEndereco(dto.endereco());
-        if (dto.saldoMoedas() != null) update.setSaldoMoedas(dto.saldoMoedas());
-        update.setCurso(dto.curso());
+        Aluno update = mapper.toEntity(dto);
         Aluno saved = alunoService.update(id, update);
-        return ResponseEntity.ok(toResponse(saved));
+        return ResponseEntity.ok(mapper.toResponseDTO(saved));
 	}
 
 	@DeleteMapping("/{id}")
@@ -73,19 +60,6 @@ public class AlunoController {
 		alunoService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-
-    private AlunoResponseDTO toResponse(Aluno a) {
-        return new AlunoResponseDTO(
-                a.getId(),
-                a.getEmail(),
-                a.getCpf(),
-                a.getRg(),
-                a.getNome(),
-                a.getEndereco(),
-                a.getSaldoMoedas(),
-                a.getCurso()
-        );
-    }
 }
 
 

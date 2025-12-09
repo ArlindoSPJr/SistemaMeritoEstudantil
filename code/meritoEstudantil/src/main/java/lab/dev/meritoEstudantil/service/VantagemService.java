@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.validation.constraints.Email;
 import lab.dev.meritoEstudantil.domain.empresa.EmpresaParceira;
 import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
+import lab.dev.meritoEstudantil.exception.BusinessRuleException;
+import lab.dev.meritoEstudantil.exception.InsufficientBalanceException;
+import lab.dev.meritoEstudantil.exception.ResourceNotFoundException;
 import lab.dev.meritoEstudantil.repository.AlunoRepository;
 import lab.dev.meritoEstudantil.repository.EmpresaParceiraRepository;
 import lab.dev.meritoEstudantil.repository.VantagemRepository;
@@ -35,7 +37,8 @@ public class VantagemService {
 
     public Vantagem create(Vantagem v) {
         if (v.getEmpresaParceira() != null && v.getEmpresaParceira().getId() != null) {
-            EmpresaParceira e = empresaParceiraRepository.findById(v.getEmpresaParceira().getId()).orElseThrow();
+            EmpresaParceira e = empresaParceiraRepository.findById(v.getEmpresaParceira().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Empresa Parceira", v.getEmpresaParceira().getId()));
             v.setEmpresaParceira(e);
         }
         return vantagemRepository.save(v);
@@ -46,7 +49,8 @@ public class VantagemService {
     }
 
     public List<Vantagem> getAlunoVantagens(Long alunoId) {
-        var aluno = alunoRepository.findById(alunoId).orElseThrow();
+        var aluno = alunoRepository.findById(alunoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno", alunoId));
         return aluno.getVantagens();
     }
     
@@ -55,7 +59,8 @@ public class VantagemService {
     }
 
     public Vantagem findById(Long id) {
-        return vantagemRepository.findById(id).orElseThrow();
+        return vantagemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Vantagem", id));
     }
 
     public Vantagem update(Long id, Vantagem update) {
@@ -66,7 +71,8 @@ public class VantagemService {
         current.setCustoMoedas(update.getCustoMoedas());
         current.setQuantidade(update.getQuantidade());
         if (update.getEmpresaParceira() != null && update.getEmpresaParceira().getId() != null) {
-            EmpresaParceira e = empresaParceiraRepository.findById(update.getEmpresaParceira().getId()).orElseThrow();
+            EmpresaParceira e = empresaParceiraRepository.findById(update.getEmpresaParceira().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Empresa Parceira", update.getEmpresaParceira().getId()));
             current.setEmpresaParceira(e);
         }
         return vantagemRepository.save(current);
@@ -75,8 +81,7 @@ public class VantagemService {
     @Transactional
     public void uploadImage(Long id, MultipartFile file) {
         Vantagem vantagem = vantagemRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(
-                        "Vantagem não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Vantagem", id));
         String imageUrl = cloudinaryService.uploadFile(file, "products");
 
         vantagem.setImageUrl(imageUrl);
@@ -89,23 +94,25 @@ public class VantagemService {
 
     public void resgatarVantagem(Long vantagemId, Long alunoId) {
         
-        var vantagem = vantagemRepository.findById(vantagemId).orElseThrow();
-        var aluno = alunoRepository.findById(alunoId).orElseThrow();
+        var vantagem = vantagemRepository.findById(vantagemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vantagem", vantagemId));
+        var aluno = alunoRepository.findById(alunoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Aluno", alunoId));
 
         if (!vantagem.isAtivo()) {
-            throw new RuntimeException("Vantagem inativa.");
+            throw new BusinessRuleException("Vantagem inativa.");
         }
 
         if (vantagem.getQuantidade() <= 0) {
-            throw new RuntimeException("Vantagem esgotada.");
+            throw new BusinessRuleException("Vantagem esgotada.");
         }
 
         if (aluno.getSaldoMoedas() < vantagem.getCustoMoedas()) {
-            throw new RuntimeException("Saldo insuficiente de moedas.");
+            throw new InsufficientBalanceException(aluno.getSaldoMoedas(), vantagem.getCustoMoedas());
         }
 
         if (aluno.getVantagens().stream().anyMatch(v -> v.getId().equals(vantagemId))) {
-            throw new RuntimeException("Vantagem já resgatada por este aluno.");
+            throw new BusinessRuleException("Vantagem já resgatada por este aluno.");
         }
 
         aluno.setSaldoMoedas((int)(aluno.getSaldoMoedas() - vantagem.getCustoMoedas()));

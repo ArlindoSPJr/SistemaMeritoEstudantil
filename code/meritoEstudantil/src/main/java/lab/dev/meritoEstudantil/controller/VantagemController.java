@@ -20,94 +20,65 @@ import org.springframework.web.multipart.MultipartFile;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import lab.dev.meritoEstudantil.domain.empresa.EmpresaParceira;
 import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemCreateDTO;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemResponseDTO;
 import lab.dev.meritoEstudantil.dto.vantagem.VantagemUpdateDTO;
 import lab.dev.meritoEstudantil.dto.vantagem.ResgatarVantagemDTO;
+import lab.dev.meritoEstudantil.mapper.VantagemMapper;
 import lab.dev.meritoEstudantil.service.VantagemService;
 
 @RestController
 @RequestMapping("/vantagens")
 public class VantagemController {
 
-    @Autowired
-    private VantagemService vantagemService;
+    private final VantagemService vantagemService;
+    private final VantagemMapper mapper;
+
+    public VantagemController(VantagemService vantagemService, VantagemMapper mapper) {
+        this.vantagemService = vantagemService;
+        this.mapper = mapper;
+    }
 
     @PostMapping
     @PreAuthorize("hasRole('EMPRESA_PARCEIRA')")
     public ResponseEntity<VantagemResponseDTO> create(@RequestBody VantagemCreateDTO dto) {
-        Vantagem v = new Vantagem();
-        v.setDescricao(dto.descricao());
-        v.setAtivo(true);
-        v.setCustoMoedas(dto.custoMoedas());
-        v.setQuantidade(dto.quantidade());
-        if (dto.empresaParceiraId() != null) {
-            EmpresaParceira empresa = new EmpresaParceira();
-            try {
-                java.lang.reflect.Field idField = EmpresaParceira.class.getDeclaredField("id");
-                idField.setAccessible(true);
-                idField.set(empresa, dto.empresaParceiraId());
-            } catch (Exception ex) {
-                // se falhar, deixamos sem id e o service lançará erro
-            }
-            v.setEmpresaParceira(empresa);
-        }
+        Vantagem v = mapper.toEntity(dto);
         Vantagem saved = vantagemService.create(v);
-        return ResponseEntity.ok(toResponse(saved));
+        return ResponseEntity.ok(mapper.toResponseDTO(saved));
     }
 
     // LISTA VANTAGENS DE UM ALUNO
     @GetMapping("/aluno/{alunoId}")
     public ResponseEntity<List<VantagemResponseDTO>> getAlunoVantagens(@PathVariable Long alunoId) {
-        return ResponseEntity.ok(vantagemService.getAlunoVantagens(alunoId).stream().map(this::toResponse).toList());
+        return ResponseEntity.ok(vantagemService.getAlunoVantagens(alunoId).stream().map(mapper::toResponseDTO).toList());
     }
 
 
     // LISTA TODOS POR EMPRESA
     @GetMapping("/empresa/{empresaId}")
     public ResponseEntity<List<VantagemResponseDTO>> findByEmpresaId(@PathVariable Long empresaId) {
-        return ResponseEntity.ok(vantagemService.findAllByEmpresaParceiraId(empresaId).stream().map(this::toResponse).toList());
+        return ResponseEntity.ok(vantagemService.findAllByEmpresaParceiraId(empresaId).stream().map(mapper::toResponseDTO).toList());
     }
 
     // LISTA TODOS - PARA O ALUNO
     @GetMapping
     public ResponseEntity<List<VantagemResponseDTO>> list() {
-        return ResponseEntity.ok(vantagemService.findAll().stream().map(this::toResponse).toList());
+        return ResponseEntity.ok(vantagemService.findAll().stream().map(mapper::toResponseDTO).toList());
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<VantagemResponseDTO> get(@PathVariable Long id) {
-        return ResponseEntity.ok(toResponse(vantagemService.findById(id)));
+        return ResponseEntity.ok(mapper.toResponseDTO(vantagemService.findById(id)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('EMPRESA_PARCEIRA')")
     public ResponseEntity<VantagemResponseDTO> update(@PathVariable Long id, @RequestBody VantagemUpdateDTO dto) {
-        Vantagem update = new Vantagem();
-        update.setDescricao(dto.descricao());
-        if (dto.ativo() != null)
-            update.setAtivo(dto.ativo());
-        if (dto.imageUrl() != null)
-            update.setImageUrl(dto.imageUrl());
-        if (dto.custoMoedas() != null)
-            update.setCustoMoedas(dto.custoMoedas());
-        if (dto.quantidade() != null)
-            update.setQuantidade(dto.quantidade());
-        if (dto.empresaParceiraId() != null) {
-            EmpresaParceira empresa = new EmpresaParceira();
-            try {
-                java.lang.reflect.Field idField = EmpresaParceira.class.getDeclaredField("id");
-                idField.setAccessible(true);
-                idField.set(empresa, dto.empresaParceiraId());
-            } catch (Exception ex) {
-            }
-            update.setEmpresaParceira(empresa);
-        }
+        Vantagem update = mapper.toEntity(dto);
         Vantagem saved = vantagemService.update(id, update);
-        return ResponseEntity.ok(toResponse(saved));
+        return ResponseEntity.ok(mapper.toResponseDTO(saved));
     }
 
     @DeleteMapping("/{id}")
@@ -140,19 +111,5 @@ public class VantagemController {
     public ResponseEntity<Void> resgatarVantagem(@PathVariable Long id, @RequestBody ResgatarVantagemDTO dto) {
         vantagemService.resgatarVantagem(id, dto.alunoId());
         return ResponseEntity.noContent().build();
-    }
-
-    private VantagemResponseDTO toResponse(Vantagem e) {
-        Long empresaId = e.getEmpresaParceira() != null ? e.getEmpresaParceira().getId() : null;
-        String empresaNome = e.getEmpresaParceira() != null ? e.getEmpresaParceira().getNomeFantasia() : null;
-        return new VantagemResponseDTO(
-                e.getId(),
-                e.getDescricao(),
-                e.isAtivo(),
-                e.getImageUrl(),
-                e.getCustoMoedas(),
-                empresaId,
-                empresaNome,
-                e.getQuantidade());
     }
 }

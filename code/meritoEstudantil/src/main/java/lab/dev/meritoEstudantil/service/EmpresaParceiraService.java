@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lab.dev.meritoEstudantil.domain.empresa.EmpresaParceira;
 import lab.dev.meritoEstudantil.domain.gerente.Role;
+import lab.dev.meritoEstudantil.exception.ResourceNotFoundException;
 import lab.dev.meritoEstudantil.repository.EmpresaParceiraRepository;
 
 @Service
@@ -33,7 +34,8 @@ public class EmpresaParceiraService {
 	}
 
 	public EmpresaParceira findById(Long id) {
-		return empresaParceiraRepository.findById(id).orElseThrow();
+		return empresaParceiraRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Empresa Parceira", id));
 	}
 
 	public EmpresaParceira update(Long id, EmpresaParceira update) {

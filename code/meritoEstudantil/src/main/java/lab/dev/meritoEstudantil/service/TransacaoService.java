@@ -12,6 +12,8 @@ import lab.dev.meritoEstudantil.domain.transacao.Transacao;
 import lab.dev.meritoEstudantil.domain.vantagem.Vantagem;
 import lab.dev.meritoEstudantil.domain.transacao.TipoTransacao;
 import lab.dev.meritoEstudantil.dto.transacao.EnviarMoedasDTO;
+import lab.dev.meritoEstudantil.exception.InsufficientBalanceException;
+import lab.dev.meritoEstudantil.exception.ResourceNotFoundException;
 import lab.dev.meritoEstudantil.repository.AlunoRepository;
 import lab.dev.meritoEstudantil.repository.ProfessorRepository;
 import lab.dev.meritoEstudantil.repository.TransacaoRepository;
@@ -44,13 +46,13 @@ public class TransacaoService {
 
 	public Transacao enviarMoedas(Long professorId, EnviarMoedasDTO dto) {
 		Professor professor = professorRepository.findById(professorId)
-				.orElseThrow(() -> new RuntimeException("Professor não encontrado com ID: " + professorId));
+				.orElseThrow(() -> new ResourceNotFoundException("Professor", professorId));
 
 		Aluno aluno = alunoRepository.findById(dto.alunoId())
-				.orElseThrow(() -> new RuntimeException("Aluno não encontrado com ID: " + dto.alunoId()));
+				.orElseThrow(() -> new ResourceNotFoundException("Aluno", dto.alunoId()));
 
 		if (professor.getSaldoMoedas() < dto.quantidadeMoedas()) {
-			throw new RuntimeException("Saldo insuficiente. Saldo atual: " + professor.getSaldoMoedas());
+			throw new InsufficientBalanceException(professor.getSaldoMoedas(), dto.quantidadeMoedas());
 		}
 
 		professor.setSaldoMoedas(professor.getSaldoMoedas() - dto.quantidadeMoedas());
@@ -69,9 +71,9 @@ public class TransacaoService {
 
 	public Transacao registrarResgate(Long alunoId, Long vantagemId, double valor) {
 		Aluno aluno = alunoRepository.findById(alunoId)
-				.orElseThrow(() -> new RuntimeException("Aluno não encontrado com ID: " + alunoId));
+				.orElseThrow(() -> new ResourceNotFoundException("Aluno", alunoId));
 		Vantagem vantagem = vantagemRepository.findById(vantagemId)
-				.orElseThrow(() -> new RuntimeException("Vantagem não encontrada com ID: " + vantagemId));
+				.orElseThrow(() -> new ResourceNotFoundException("Vantagem", vantagemId));
 
 		Transacao transacao = new Transacao(
 				null, // professor é null no resgate
@@ -93,7 +95,7 @@ public class TransacaoService {
 
 	public Transacao obterTransacao(Long id) {
 		return transacaoRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Transação não encontrada com ID: " + id));
+				.orElseThrow(() -> new ResourceNotFoundException("Transação", id));
 	}
 
 	public List<Transacao> obterTodas() {
